@@ -1,30 +1,14 @@
 {
-  "config": {
-    "step": {
-      "user": {
-        "title": "Zdrojový přepínač HDO",
-        "description": "Vyber přepínač, který reprezentuje HDO. Hodnota ON znamená nízký tarif, OFF vysoký tarif.",
-        "data": {
-          "entity_id": "HDO přepínač"
-        },
-        "data_description": {
-          "entity_id": "Zvol přepínač (switch.*), jehož stav (ON/OFF) určuje, zda je právě nízký nebo vysoký tarif."
-        }
-      }
-    },
-    "error": {
-      "invalid_entity": "Zadej platné entity_id přepínače (switch.*)."
-    }
-  },
   "options": {
     "step": {
       "user": {
         "title": "Možnosti – HDO zdroj",
+        "description": "Text se zobrazí po kliknutí na ikonu „?“ vpravo nahoře.",
         "data": {
           "entity_id": "HDO přepínač"
         },
         "data_description": {
-          "entity_id": "Změň HDO zdrojový přepínač, pokud potřebuješ."
+          "entity_id": "Zvol přepínač (switch.*), jehož stav ON/OFF určuje nízký/vysoký tarif."
         }
       }
     }
