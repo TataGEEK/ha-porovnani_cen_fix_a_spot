@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Možnosti – HDO zdroj",
-        "description": "Text se zobrazí po kliknutí na ikonu „?“ vpravo nahoře.",
+        "description": "Vyber přepínač, který reprezentuje HDO. Hodnota ON znamená nízký tarif, OFF vysoký tarif.",
         "data": {
           "entity_id": "HDO přepínač"
         },
