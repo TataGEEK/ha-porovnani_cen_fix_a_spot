@@ -1,0 +1,8 @@
+{
+  "name": "Porovnání cen fix a spot",
+  "domains": [
+    "sensor"
+  ],
+  "homeassistant": "2024.4.0",
+  "render_readme": true
+}

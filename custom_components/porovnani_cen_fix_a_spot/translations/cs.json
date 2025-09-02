@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Zdrojový přepínač HDO",
+        "description": "Uveď entity_id přepínače, který reprezentuje HDO (ON=nízký tarif, OFF=vysoký tarif)."
+      }
+    },
+    "error": {
+      "invalid_entity": "Zadej platné entity_id přepínače (switch.*)."
+    }
+  }
+}
