@@ -3,11 +3,30 @@
     "step": {
       "user": {
         "title": "HDO source switch",
-        "description": "Provide the entity_id of the switch representing HDO (ON=low tariff, OFF=high tariff)."
+        "description": "Select the switch that represents HDO. ON means low tariff, OFF means high tariff.",
+        "data": {
+          "entity_id": "HDO switch"
+        },
+        "data_description": {
+          "entity_id": "Pick a switch (switch.*) whose state (ON/OFF) indicates whether the low or high tariff is active."
+        }
       }
     },
     "error": {
       "invalid_entity": "Please provide a valid switch entity_id (switch.*)."
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "title": "Options – HDO source",
+        "data": {
+          "entity_id": "HDO switch"
+        },
+        "data_description": {
+          "entity_id": "Change the HDO source switch if needed."
+        }
+      }
     }
   }
 }
