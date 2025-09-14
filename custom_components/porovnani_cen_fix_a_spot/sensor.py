@@ -602,32 +602,32 @@ class FixHourlyCostSensor(SensorEntity):
         """Čti aktuální hodnotu z entry.options → entry.data → DEFAULT_MAP."""
         if default is None:
             default = DEFAULT_MAP.get(key, 0.0)
+
         # 1) aktuální options
         if key in self._entry.options:
             try:
                 return float(self._entry.options[key])
             except Exception:
-                return float(default or 0.0)
-                # DEBUG
                 LOGGER.debug(
-                    "Chyba v získání ceny - krok 1 - aktuální options"
+                    "Chyba v získání ceny - krok 1 - aktuální options",
+                    exc_info=True,
                 )
+                return float(default or 0.0)
+
         # 2) původní data z config flow
         if key in self._entry.data:
             try:
                 return float(self._entry.data[key])
             except Exception:
-                return float(default or 0.0)
-                # DEBUG
                 LOGGER.debug(
-                    "Chyba v získání ceny - krok 2 - původní data z config flow"
+                    "Chyba v získání ceny - krok 2 - původní data z config flow",
+                    exc_info=True,
                 )
+                return float(default or 0.0)
+
         # 3) fallback
+        LOGGER.debug("Chyba v získání ceny - krok 3 - fallback")
         return float(default or 0.0)
-        # DEBUG
-        LOGGER.debug(
-            "Chyba v získání ceny - krok 3 - fallback"
-        )
 
     def _cons_kwh(self) -> float:
         try:
