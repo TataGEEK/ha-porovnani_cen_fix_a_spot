@@ -339,6 +339,10 @@ class _DailyTariffEnergySensor(SensorEntity, RestoreEntity):
         return self._now().strftime("%Y-%m-%d")
 
     def _cons_1h(self) -> float:
+        # DONUCENÍ k přepočtu před čtením
+        recompute = getattr(self._cons, "_recompute", None)
+        if callable(recompute):
+            recompute()
         try:
             return float(self._cons.native_value or 0.0)
         except Exception:
@@ -358,7 +362,7 @@ class _DailyTariffEnergySensor(SensorEntity, RestoreEntity):
             self._last_closed_total = float(lct) if isinstance(lct, (int, float)) else None
 
         # tick: každou celou hodinu přičti spotřebu, pokud odpovídá tarifu
-        self._unsubs.append(async_track_time_change(self.hass, self._on_hour_tick, minute=0, second=12))
+        self._unsubs.append(async_track_time_change(self.hass, self._on_hour_tick, minute=0, second=5))
         # plus malý půlnoční „pojistný“ tick (kdyby HA přes půlnoc nespal)
         self._unsubs.append(async_track_time_change(self.hass, self._on_midnight_tick, hour=0, minute=0, second=30))
 
@@ -384,18 +388,28 @@ class _DailyTariffEnergySensor(SensorEntity, RestoreEntity):
     @callback
     def _on_hour_tick(self, _now) -> None:
         today = self._cur_day_key()
-        # změna dne? uzavři a reset
         if self._day_key and self._day_key != today:
             self._last_closed_total = self._value
             self._value = 0.0
             self._day_key = today
-
-        # přičtení dle aktuálního tarifu
+    
         is_nt = _is_low_tariff(self.hass, self._hdo_switch)
-        use_bucket = (is_nt is True) if self._want_nt else (is_nt is False)
-        if use_bucket:
-            self._value = round(self._value + self._cons_1h(), 6)
-
+        # chceme-li NT a HDO je True => NT
+        # chceme-li VT a HDO je False nebo None => VT (fallback, ať nic nezmizí)
+        use_bucket = (is_nt is True) if self._want_nt else (is_nt is False or is_nt is None)
+    
+        add = self._cons_1h() if use_bucket else 0.0
+        if add:
+            self._value = round(self._value + add, 6)
+    
+        # DEBUG – co se kdy přičetlo a jak HDO rozhodlo
+        LOGGER.debug(
+            "[daily_energy_%s] day=%s HDO=%s use_bucket=%s add=%.6f kWh total=%.6f kWh",
+            "nt" if self._want_nt else "vt",
+            self._day_key, ("NT" if is_nt else ("VT" if is_nt is False else "UNKNOWN")),
+            use_bucket, add, self._value
+        )
+    
         self.async_write_ha_state()
 
     @property
