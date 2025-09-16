@@ -87,7 +87,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if not total and not l1:
                     errors["base"] = "consumption_missing"
                 else:
-                    name = (user_input.get(CONF_PROFILE_NAME) or "").strip() or "Porovnání cen"
+                    name = (user_input.get(CONF_PROFILE_NAME) or "").strip() or DEFAULT_PROFILE_NAME
                     return self.async_create_entry(
                         title=name,
                         data={
