@@ -1,7 +1,7 @@
 {
   "domain": "porovnani_cen_fix_a_spot",
   "name": "Porovnání cen fix a spot",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "documentation": "https://github.com/TataGEEK/porovnani_cen_fix_a_spot",
   "issue_tracker": "https://github.com/TataGEEK/porovnani_cen_fix_a_spot/issues",
   "codeowners": [
