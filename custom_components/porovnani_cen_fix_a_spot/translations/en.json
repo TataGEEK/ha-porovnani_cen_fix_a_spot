@@ -28,5 +28,44 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "hdo_tariff": {
+        "name": "HDO tariff",
+        "state": {
+          "low": "low",
+          "high": "high",
+          "unknown": "unknown"
+        }
+      },
+      "hourly_consumption": {
+        "name": "Consumption – last hour"
+      },
+      "daily_energy_vt": {
+        "name": "Consumption high tariff – today"
+      },
+      "daily_energy_nt": {
+        "name": "Consumption low tariff – today"
+      },
+      "spot_cost_hourly": {
+        "name": "Cost (spot) – last hour"
+      },
+      "fix_cost_hourly": {
+        "name": "Cost (fix) – last hour"
+      },
+      "spot_cost_daily": {
+        "name": "Cost (spot) – daily total"
+      },
+      "spot_cost_monthly": {
+        "name": "Cost (spot) – monthly total"
+      },
+      "fix_cost_daily": {
+        "name": "Cost (fix) – daily total"
+      },
+      "fix_cost_monthly": {
+        "name": "Cost (fix) – monthly total"
+      }
+    }
   }
 }

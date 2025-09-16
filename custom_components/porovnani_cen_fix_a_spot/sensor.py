@@ -111,12 +111,12 @@ class HDOTariffSensor(SensorEntity):
     """Sensor odvozující HDO tarif z přepínače (ON=nízký, OFF=vysoký)."""
 
     _attr_icon = "mdi:flash-auto"
+    _attr_translation_key = "hdo_tariff"
 
     def __init__(self, hass: HomeAssistant, source_entity_id: str) -> None:
         self.hass = hass
         self._source_entity_id = source_entity_id
         self._unsubscribe = None
-        self._attr_name = "HDO Tarif"
         safe_source = source_entity_id.replace(".", "_").replace(":", "_").replace("/", "_")
         self._attr_unique_id = f"{DOMAIN}_hdo_tarif_{safe_source}"
         self._state = None
@@ -142,7 +142,7 @@ class HDOTariffSensor(SensorEntity):
     @callback
     def _set_from_source(self, state_obj) -> None:
         if state_obj is None:
-            self._state = "neznámé"
+            self._state = "unknown"
             self._attrs = {
                 ATTR_SOURCE_ENTITY_ID: self._source_entity_id,
                 ATTR_SOURCE_STATE: None,
@@ -151,7 +151,7 @@ class HDOTariffSensor(SensorEntity):
         else:
             src_state = state_obj.state
             is_low = str(src_state).lower() in ("on", "true", "1")
-            self._state = "nízký" if is_low else "vysoký"
+            self._state = "low" if is_low else "high"
             self._attrs = {
                 ATTR_SOURCE_ENTITY_ID: self._source_entity_id,
                 ATTR_SOURCE_STATE: src_state,
@@ -173,7 +173,7 @@ class HDOTariffSensor(SensorEntity):
 # ---------------------------
 
 class HourlyConsumptionSensor(SensorEntity):
-    _attr_name = "Spotřeba – poslední hodina"
+    _attr_translation_key = "hourly_consumption"
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
     _attr_device_class = SensorDeviceClass.ENERGY
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -326,7 +326,6 @@ class _DailyTariffEnergySensor(SensorEntity, RestoreEntity):
 
         tag = "nt" if want_nt else "vt"
         self._attr_unique_id = f"{DOMAIN}_daily_energy_{tag}_{entry.entry_id}"
-        self._attr_name = f"Spotřeba { 'nízký' if want_nt else 'vysoký' } tarif – dnes"
 
         self._unsubs: list[callable] = []
         self._value: float = 0.0
@@ -415,11 +414,15 @@ class _DailyTariffEnergySensor(SensorEntity, RestoreEntity):
 
 
 class DailyEnergyVTSensor(_DailyTariffEnergySensor):
+    _attr_translation_key = "daily_energy_vt"
+
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, cons_sensor: "HourlyConsumptionSensor", hdo_switch: str | None) -> None:
         super().__init__(hass, entry, cons_sensor, hdo_switch, want_nt=False)
 
 
 class DailyEnergyNTSensor(_DailyTariffEnergySensor):
+    _attr_translation_key = "daily_energy_nt"
+
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, cons_sensor: "HourlyConsumptionSensor", hdo_switch: str | None) -> None:
         super().__init__(hass, entry, cons_sensor, hdo_switch, want_nt=True)
 
@@ -428,7 +431,7 @@ class DailyEnergyNTSensor(_DailyTariffEnergySensor):
 # ---------------------------
 
 class SpotHourlyCostSensor(SensorEntity):
-    _attr_name = "Cena (spot) – poslední hodina"
+    _attr_translation_key = "spot_cost_hourly"
     _attr_device_class = SensorDeviceClass.MONETARY
     _attr_native_unit_of_measurement = "CZK"
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -576,7 +579,7 @@ class SpotHourlyCostSensor(SensorEntity):
         self._unsubs.clear()
 
 class FixHourlyCostSensor(SensorEntity):
-    _attr_name = "Cena (fix) – poslední hodina"
+    _attr_translation_key = "fix_cost_hourly"
     _attr_device_class = SensorDeviceClass.MONETARY
     _attr_native_unit_of_measurement = "CZK"
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -754,10 +757,6 @@ class _BaseAccumCostSensor(SensorEntity, RestoreEntity):
         self._cost_sensor = cost_sensor
         self._period = period
         self._unsubs: list[callable] = []
-        # unikátní ID + název
-        suffix = "den" if period == "day" else "mesic"
-        self._attr_unique_id = f"{DOMAIN}_spot_cost_{suffix}_{entry.entry_id}"
-        self._attr_name = "Cena (spot) – denní součet" if period == "day" else "Cena (spot) – měsíční součet"
 
         self._value = 0.0
         self._period_key: str | None = None   # "YYYY-MM-DD" nebo "YYYY-MM"
@@ -839,31 +838,31 @@ class _BaseAccumCostSensor(SensorEntity, RestoreEntity):
 
 
 class DailySpotCostSensor(_BaseAccumCostSensor):
+    _attr_translation_key = "spot_cost_daily"
+
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, cost_sensor: "SpotHourlyCostSensor") -> None:
         super().__init__(hass, entry, cost_sensor, period="day")
-        # přepiš jméno/unique_id pro spot
-        self._attr_name = "Cena (spot) – denní součet"
         self._attr_unique_id = f"{DOMAIN}_spot_cost_den_{entry.entry_id}"
 
 class DailyFixCostSensor(_BaseAccumCostSensor):
+    _attr_translation_key = "fix_cost_daily"
+
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, cost_sensor: "FixHourlyCostSensor") -> None:
         super().__init__(hass, entry, cost_sensor, period="day")
-        # přepiš jméno/unique_id pro fix
-        self._attr_name = "Cena (fix) – denní součet"
         self._attr_unique_id = f"{DOMAIN}_fix_cost_den_{entry.entry_id}"
 
 class MonthlySpotCostSensor(_BaseAccumCostSensor):
+    _attr_translation_key = "spot_cost_monthly"
+
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, cost_sensor: "SpotHourlyCostSensor") -> None:
         super().__init__(hass, entry, cost_sensor, period="month")
-        # přepiš jméno/unique_id pro spot
-        self._attr_name = "Cena (spot) – měsíční součet"
         self._attr_unique_id = f"{DOMAIN}_spot_cost_mesic_{entry.entry_id}"
 
 class MonthlyFixCostSensor(_BaseAccumCostSensor):
+    _attr_translation_key = "fix_cost_monthly"
+
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry, cost_sensor: "FixHourlyCostSensor") -> None:
         super().__init__(hass, entry, cost_sensor, period="month")
-        # přepiš jméno/unique_id pro fix
-        self._attr_name = "Cena (fix) – měsíční součet"
         self._attr_unique_id = f"{DOMAIN}_fix_cost_mesic_{entry.entry_id}"
 
 # ---------------------------

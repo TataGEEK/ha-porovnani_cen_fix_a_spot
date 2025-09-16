@@ -28,5 +28,44 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "hdo_tariff": {
+        "name": "HDO tarif",
+        "state": {
+          "low": "nízký",
+          "high": "vysoký",
+          "unknown": "neznámé"
+        }
+      },
+      "hourly_consumption": {
+        "name": "Spotřeba – poslední hodina"
+      },
+      "daily_energy_vt": {
+        "name": "Spotřeba vysoký tarif – dnes"
+      },
+      "daily_energy_nt": {
+        "name": "Spotřeba nízký tarif – dnes"
+      },
+      "spot_cost_hourly": {
+        "name": "Cena (spot) – poslední hodina"
+      },
+      "fix_cost_hourly": {
+        "name": "Cena (fix) – poslední hodina"
+      },
+      "spot_cost_daily": {
+        "name": "Cena (spot) – denní součet"
+      },
+      "spot_cost_monthly": {
+        "name": "Cena (spot) – měsíční součet"
+      },
+      "fix_cost_daily": {
+        "name": "Cena (fix) – denní součet"
+      },
+      "fix_cost_monthly": {
+        "name": "Cena (fix) – měsíční součet"
+      }
+    }
   }
 }
